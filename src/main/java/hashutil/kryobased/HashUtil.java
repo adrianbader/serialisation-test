@@ -2,19 +2,20 @@
  * Copyright (C) Schweizerische Bundesbahnen SBB, 2021.
  */
 
-package hashutil.microstreambased;
+package hashutil.kryobased;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import com.google.common.hash.Hashing;
+import java.io.ByteArrayOutputStream;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 @NoArgsConstructor(access = PRIVATE)
 public class HashUtil {
-
-  private static final Serializer serializer = Serializer.get();
 
   public static Long getTime() {
     return time;
@@ -30,9 +31,14 @@ public class HashUtil {
 
   @SneakyThrows
   public static String hashObjects(Object... objects) {
+    Kryo kryo = new Kryo();
+    kryo.setRegistrationRequired(false);
 
     long start = System.currentTimeMillis();
-    byte[] data = serializer.serialize(objects);
+    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    Output output = new Output(byteArrayOutputStream);
+    kryo.writeObject(output, objects);
+    byte[] data = byteArrayOutputStream.toByteArray();
     time += System.currentTimeMillis() - start;
     bytes += data.length;
 

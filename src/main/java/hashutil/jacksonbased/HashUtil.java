@@ -12,13 +12,6 @@ import java.nio.charset.StandardCharsets;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
-/**
- * <pre>
- * Provide easy to use hash functions based on SHA-256.
- * Attention: The output may change for same input in future code improvements.
- * Therefore, use it only for hashes that do not need to be long term stable.
- * </pre>
- */
 @NoArgsConstructor(access = PRIVATE)
 public class HashUtil {
 
